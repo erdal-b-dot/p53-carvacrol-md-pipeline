@@ -102,11 +102,11 @@ conda run -n ${MOL_SIM_ENV} vina \
     --ligand   carvacrol.pdbqt \
     --config   vina_config.txt \
     --out      carvacrol_docked.pdbqt \
-    --log      vina_log.txt
+    2>&1 | tee vina_log.txt
 
 echo ""
 echo "=== Docking Sonuçları ==="
-grep "^   [0-9 ]" vina_log.txt || cat vina_log.txt | grep -A 20 "mode"
+grep -E "^\s+[0-9]+\s+[-0-9.]+" vina_log.txt || grep -A 20 "mode" vina_log.txt | head -20
 
 # ── En iyi pozu PDB olarak çıkar ────────────────────────────────────
 echo ""

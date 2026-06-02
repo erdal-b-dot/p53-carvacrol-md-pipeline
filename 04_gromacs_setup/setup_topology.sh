@@ -19,7 +19,7 @@ GMX="conda run -n ${MOL_SIM_ENV} gmx"
 
 PROTEIN_PDB="../01_protein_prep/1TSR_chainA.pdb"  # Zincir A monomer (PROPKA analizi sonrası)
 LIG_ITP="../02_ligand_prep/carvacrol.acpype/carvacrol_GMX.itp"
-LIG_GRO="../02_ligand_prep/carvacrol.acpype/carvacrol_GMX.gro"
+LIG_GRO="../02_ligand_prep/carvacrol.acpype/carvacrol_docked_GMX.gro"  # Docked koordinatlar (Kabsch süperpozisyon)
 BEST_POSE="../03_docking/carvacrol_best_pose.pdb"
 MDP_DIR="./mdp"
 

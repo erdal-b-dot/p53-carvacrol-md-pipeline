@@ -1,0 +1,16 @@
+REMARK  Best docking pose (Mode 1) — AutoDock Vina 1.2.5
+REMARK  Ligand: Carvacrol (CID:10364) | Target: 1TSR (p53) Chain A
+REMARK  Affinity: -6.056 kcal/mol | Blind docking, exhaustiveness=32
+HETATM    1  C   UNL A 999      69.044  11.436  64.073  1.00  0.00           A
+HETATM    2  C   UNL A 999      68.387  12.647  64.293  1.00  0.00           A
+HETATM    3  C   UNL A 999      68.874  10.378  64.965  1.00  0.00           A
+HETATM    4  C   UNL A 999      67.390  11.739  66.298  1.00  0.00           A
+HETATM    5  C   UNL A 999      67.560  12.798  65.406  1.00  0.00           A
+HETATM    6  C   UNL A 999      68.046  10.529  66.078  1.00  0.00           A
+HETATM    7  C   UNL A 999      66.508  11.884  67.495  1.00  0.00           C
+HETATM    8  C   UNL A 999      69.929  11.273  62.884  1.00  0.00           C
+HETATM    9  C   UNL A 999      71.399  11.030  63.272  1.00  0.00           C
+HETATM   10  C   UNL A 999      69.837  12.465  61.913  1.00  0.00           C
+HETATM   11  O   UNL A 999      66.925  13.987  65.607  1.00  0.00          OA
+HETATM   12  H   UNL A 999      67.497  14.612  66.079  1.00  0.00          HD
+END
