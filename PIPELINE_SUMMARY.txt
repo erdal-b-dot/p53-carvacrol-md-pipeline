@@ -1,0 +1,122 @@
+================================================================================
+  MD PIPELINE SUMMARY: p53 (1TSR) × Carvacrol — 1 µs Molecular Dynamics
+  Generated: 2026-06-02
+================================================================================
+
+SYSTEM OVERVIEW
+---------------
+  Protein target : p53 DNA-binding domain (PDB: 1TSR)
+                   Chains A+B (protein only, DNA removed)
+                   Structural Zn2+ ion retained
+  Ligand         : Carvacrol (2-methyl-5-isopropylphenol)
+                   PubChem CID: 10364
+                   SMILES: Cc1ccc(C(C)C)cc1O
+                   Molecular formula: C10H14O  |  MW: 150.22 g/mol
+  Simulation     : 1 microsecond (1,000,000 ps)
+  HPC platform   : TRUBA (Turkish national HPC, SLURM)
+  MD engine      : GROMACS 2024.1-oneapi-2024
+
+FORCE FIELD PARAMETERS
+-----------------------
+  Protein           : AMBER14SB
+  Ligand            : GAFF2 (atom types) + AM1-BCC (partial charges, ACPYPE)
+  Water             : TIP3P
+  Solvent box       : Dodecahedron, 1.2 nm clearance from protein surface
+  Salt              : 0.15 M NaCl (physiological ionic strength)
+  Charge            : Neutralized (Na+/Cl- added as needed)
+
+MD SETTINGS — PRODUCTION (1 µs)
+---------------------------------
+  Timestep          : 2 fs (0.002 ps)
+  Steps             : 500,000,000
+  Temperature       : 310 K (physiological)
+  Thermostat        : V-rescale (tau = 0.1 ps)
+  Thermostat groups : Protein_LIG | Water_and_ions (separate coupling)
+  Pressure          : 1.0 bar
+  Barostat          : Parrinello-Rahman (tau = 2.0 ps, compressibility = 4.5e-5)
+  Electrostatics    : PME (cutoff 1.2 nm, grid spacing 0.12 nm)
+  VdW               : Force-switch modifier (1.0–1.2 nm) — AMBER standard
+  Constraints       : h-bonds (LINCS, order 4, iter 2)
+  PBC               : xyz (all directions)
+  Dispersion corr.  : EnerPres
+
+MD OUTPUT FREQUENCY
+--------------------
+  Trajectory (.xtc) : every 100 ps  (~10,000 frames total)
+  Energy (.edr)     : every 10 ps
+  Log               : every 10 ps
+  Checkpoint (.cpt) : every 1 ns  (critical for TRUBA continuation)
+
+EQUILIBRATION PROTOCOL
+-----------------------
+  Step 1 — Energy minimization:
+    Algorithm : steepest descent
+    Convergence: Fmax < 10 kJ/mol/nm
+    Max steps : 50,000
+    Restraints: none
+
+  Step 2 — NVT equilibration:
+    Duration  : 100 ps (50,000 steps)
+    Temp.     : 310 K (V-rescale)
+    Restraints: heavy atoms — protein + ligand (k = 1000 kJ/mol/nm2)
+    Initial velocities: Maxwell-Boltzmann at 310 K
+
+  Step 3 — NPT equilibration:
+    Duration  : 1 ns (500,000 steps)
+    Temp.     : 310 K (V-rescale)
+    Pressure  : 1 bar (Parrinello-Rahman)
+    Restraints: heavy atoms — protein + ligand (k = 1000 kJ/mol/nm2)
+
+PROTONATION (PROPKA3 @ pH 7.4)
+--------------------------------
+  Tool      : PROPKA3 v3.5.1
+  pH target : 7.4 (physiological)
+  Key check : Histidine residues (HID/HIE/HIP), Zn2+-coordinating His,
+              Asp/Glu near pKa 7.4, Cys residues
+  Applied via: gmx pdb2gmx -his flag (manual review required)
+
+MOLECULAR DOCKING
+------------------
+  Tool          : AutoDock Vina 1.2.6
+  Receptor prep : Meeko mk_prepare_receptor.py
+  Ligand prep   : Meeko mk_prepare_ligand.py
+  Search space  : Blind docking (protein CoM ± 10 Å per axis)
+  Exhaustiveness: 32
+  Binding modes : 10 poses generated
+  Best pose     : Mode 1 (lowest binding affinity, kcal/mol) used for MD
+
+TRUBA JOB CONFIGURATION
+------------------------
+  Partition   : hamsi (AMD EPYC 7742, 128 cores/node)
+  Nodes       : 1
+  MPI ranks   : 1 (single-rank, multi-thread)
+  OpenMP      : 56 threads
+  Wall clock  : 72 hours (3-day limit)
+  Module      : centos7.9/app/gromacs/2024.1-oneapi-2024
+  Continuation: Auto-resubmit from md.cpt checkpoint until 1 µs complete
+  Est. runtime: ~5–7 days total (3–4 SLURM jobs)
+
+SOFTWARE CITATIONS
+-------------------
+  1. GROMACS 2024:  Abraham et al., SoftwareX 1-2, 19-25 (2015)
+  2. AMBER14SB:     Maier et al., J. Chem. Theory Comput. 11, 3696 (2015)
+  3. GAFF2/ACPYPE:  Wang et al., J. Comput. Chem. 25, 1157 (2004)
+                    Sousa da Silva & Vranken, BMC Res. Notes 5, 367 (2012)
+  4. Vina 1.2:      Eberhardt et al., J. Chem. Inf. Model. 61, 3891 (2021)
+  5. PROPKA3:       Olsson et al., J. Chem. Theory Comput. 7, 525 (2011)
+  6. Meeko:         Forli lab, https://github.com/forlilab/meeko
+  7. 1TSR:          Cho et al., Science 265, 346 (1994)
+
+FILES (local preparation, send to TRUBA)
+------------------------------------------
+  npt.gro        — post-equilibration coordinates (starting point for 1 µs)
+  npt.cpt        — checkpoint with velocity information
+  topol.top      — system topology
+  *.itp          — force field include files (protein, ligand, water, ions)
+  index.ndx      — GROMACS index (Protein_LIG group defined)
+  md_1us.mdp     — production MD parameters
+
+================================================================================
+  Pipeline directory : ~/md_1tsr_carvacrol/
+  Contact            : see repository README.md
+================================================================================

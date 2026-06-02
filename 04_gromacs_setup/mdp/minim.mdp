@@ -1,0 +1,31 @@
+; minim.mdp — Enerji minimizasyonu
+; AMBER14SB + GAFF2 için optimize parametreler
+integrator          = steep
+nsteps              = 50000
+emtol               = 10.0         ; kJ/mol/nm — yakınsama eşiği
+emstep              = 0.01
+
+; Çıktı
+nstxout             = 0
+nstvout             = 0
+nstfout             = 0
+nstenergy           = 500
+nstlog              = 500
+
+; Kesim mesafeleri (AMBER ff standardı: 1.2 nm)
+cutoff-scheme       = Verlet
+ns_type             = grid
+nstlist             = 20
+rlist               = 1.2
+rcoulomb            = 1.2
+rvdw                = 1.2
+vdw-modifier        = force-switch
+rvdw-switch         = 1.0          ; 1.0→1.2 nm arasında kuvvet düzeltmesi
+coulombtype         = PME
+pme_order           = 4
+fourierspacing      = 0.12
+
+pbc                 = xyz
+DispCorr            = EnerPres
+
+constraints         = none         ; EM'de constraint yok
