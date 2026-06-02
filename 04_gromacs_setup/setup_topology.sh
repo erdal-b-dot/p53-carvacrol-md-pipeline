@@ -17,7 +17,7 @@ cd "$(dirname "$0")"
 MOL_SIM_ENV="mol-sim"
 GMX="conda run -n ${MOL_SIM_ENV} gmx"
 
-PROTEIN_PDB="../01_protein_prep/1TSR_protein.pdb"
+PROTEIN_PDB="../01_protein_prep/1TSR_chainA.pdb"  # Zincir A monomer (PROPKA analizi sonrası)
 LIG_ITP="../02_ligand_prep/carvacrol.acpype/carvacrol_GMX.itp"
 LIG_GRO="../02_ligand_prep/carvacrol.acpype/carvacrol_GMX.gro"
 BEST_POSE="../03_docking/carvacrol_best_pose.pdb"
@@ -29,26 +29,23 @@ for f in "$PROTEIN_PDB" "$LIG_ITP" "$LIG_GRO" "$BEST_POSE"; do
 done
 
 # ══════════════════════════════════════════════════════════════════════
-#  ⚠  PROPKA SONUCUNA GÖRE DOLDURUN (01_protein_prep/1TSR_protein.pka)
+#  PROPKA3 SONUCU — Zincir A, pH 7.4 (2026-06-02)
 #
-#  Her HIS residuesi için tek satır girin:
-#    0 = HID (delta N'de H, Nδ-H)
-#    1 = HIE (epsilon N'de H, Nε-H) ← varsayılan (en yaygın)
-#    2 = HIP (her iki N'de H, protonlanmış)
+#  Zincir A His residueleri (3 adet, sırayla):
+#    His115: pKa=6.26 → HIE (1)  — yüzey, standart
+#    His178: pKa=5.88 → HIE (1)  — ⚠ ZN koordinasyonu (Nδ–ZN, Nε–H korunur)
+#    His233: pKa=5.95 → HIE (1)  — standart
 #
-#  Örnek: 1TSR'de His168, His179(ZN koordinasyonu!), His193, His214...
-#  ZN'ye koordine His (genellikle HIE/HID) → dikkatli seçin!
+#  CYM (ZN-koordine, deprotonlanmış Cys): 1TSR_chainA.pdb'de zaten CYM olarak işaretlendi
+#    Cys176 → CYM | Cys238 → CYM | Cys242 → CYM
+#  pdb2gmx AMBER14SB, CYM residüsünü otomatik tanır (-ignh ile H çıkarılır)
 # ══════════════════════════════════════════════════════════════════════
 HIS_PROT="$(cat <<'HIS_EOF'
 1
 1
 1
-1
-1
-1
 HIS_EOF
 )"
-# Yukarıdaki satırları PROPKA çıktısına göre güncelleyin!
 
 # ── ÇALIŞMA DİZİNİ ──────────────────────────────────────────────────
 WORKDIR="./gromacs_run"
@@ -64,7 +61,7 @@ LIG_GRO_BASE=$(basename "$LIG_GRO")
 echo ""
 echo ">>> [1/9] pdb2gmx — AMBER14SB protein topology..."
 echo "${HIS_PROT}" | ${GMX} pdb2gmx \
-    -f "../../01_protein_prep/1TSR_protein.pdb" \
+    -f "../../01_protein_prep/1TSR_chainA.pdb" \
     -o protein.gro \
     -p topol.top \
     -i posre.itp \
