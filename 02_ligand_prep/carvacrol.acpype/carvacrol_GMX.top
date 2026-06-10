@@ -1,0 +1,20 @@
+; carvacrol_GMX.top created by acpype (v: 2023.10.27) on Tue Jun  2 16:25:29 2026
+
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+1               2               yes             0.5     0.8333333333
+
+; Include carvacrol_GMX.itp topology
+#include "carvacrol_GMX.itp"
+
+; Ligand position restraints
+#ifdef POSRES_LIG
+#include "posre_carvacrol.itp"
+#endif
+
+[ system ]
+ carvacrol
+
+[ molecules ]
+; Compound        nmols
+ carvacrol        1     

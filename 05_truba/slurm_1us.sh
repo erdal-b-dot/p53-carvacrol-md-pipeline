@@ -1,54 +1,49 @@
 #!/bin/bash
 # ══════════════════════════════════════════════════════════════════════
 #  TRUBA SLURM — 1TSR × Karvakrol  |  1 µs Üretim MD
-#  GROMACS 2024.1-oneapi-2024
-#
-#  Kullanım:
-#    1. TRUBA'da çalışma dizinine geçin
-#    2. Dosyaları transfer edin (bkz. transfer_files.sh)
-#    3. sbatch slurm_1us.sh
+#  GROMACS 2024.1-oneapi2024  |  ARF barbun (Intel Xeon Gold)
 #
 #  Otomatik devam: Job bitmeden süre dolursa otomatik yeniden gönderilir.
 #  Checkpoint (md.cpt) varsa kaldığı yerden devam eder.
 # ══════════════════════════════════════════════════════════════════════
 
 #SBATCH --job-name=1TSR_carv_1us
-#SBATCH --account=YOUR_ACCOUNT          # ← TRUBA hesap adınız
-#SBATCH --partition=hamsi               # AMD EPYC 7742, 128 çekirdek/node
+#SBATCH --account=ebalcan
+#SBATCH --partition=barbun
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1             # GROMACS: tek MPI, çok OpenMP
-#SBATCH --cpus-per-task=56              # 56 çekirdek (hamsi'de 128 max)
-#SBATCH --time=72:00:00                 # 3 gün (hamsi limiti)
+#SBATCH --ntasks-per-node=20
+#SBATCH --cpus-per-task=1
+#SBATCH --time=72:00:00
 #SBATCH --output=slurm_%j.out
 #SBATCH --error=slurm_%j.err
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=YOUR_EMAIL@domain   # ← E-posta adresiniz
 
-# ── Alternatif: barbun (Intel, oneapi için daha optimize) ────────────
-# #SBATCH --partition=barbun
-# #SBATCH --ntasks-per-node=1
-# #SBATCH --cpus-per-task=40           # barbun: 40 çekirdek/node
-
 # ══════════════════════════════════════════════════════════════════════
+source /usr/share/Modules/init/bash
 module purge
-module load centos7.9/app/gromacs/2024.1-oneapi-2024
+module load gromacs
 
-GMX="gmx"                              # oneapi versiyonu tek binary
-NTOMP=$SLURM_CPUS_PER_TASK            # OpenMP thread sayısı
+GMX="gmx_mpi"
+NP=20
+NTOMP=1
+export OMP_NUM_THREADS=$NTOMP
+export I_MPI_HYDRA_BOOTSTRAP=fork      # tek node: fork ile rank başlat
+export I_MPI_FABRICS=shm               # tek node: shared memory fabric
 MDP="./mdp/md_1us.mdp"
 INDEX="./index.ndx"
 
 echo "════════════════════════════════════════════════════════════"
 echo "  Job ID     : $SLURM_JOB_ID"
 echo "  Node       : $SLURMD_NODENAME"
-echo "  Çekirdek   : $NTOMP OpenMP thread"
+echo "  Çekirdek   : ${NP} MPI rank × ${NTOMP} OpenMP = $((NP*NTOMP)) çekirdek"
 echo "  Başlangıç  : $(date)"
 echo "  Hedef      : 1TSR (p53 core domain)"
 echo "  Ligand     : Karvakrol (CID:10364)"
 echo "  Süre       : 1 µs (500,000,000 adım)"
 echo "════════════════════════════════════════════════════════════"
 
-# ── grompp: .tpr dosyası yalnızca ilk çalıştırmada oluşturulur ──────
+# ── grompp ──────────────────────────────────────────────────────────
 if [ ! -f md.tpr ]; then
     echo ""
     echo ">>> md.tpr oluşturuluyor..."
@@ -60,52 +55,67 @@ if [ ! -f md.tpr ]; then
         -n "$INDEX" \
         -o md.tpr \
         -maxwarn 2
+    if [ $? -ne 0 ]; then
+        echo "HATA: grompp başarısız, job durduruluyor."
+        exit 1
+    fi
 fi
 
-# ── mdrun: Checkpoint varsa devam et ────────────────────────────────
+# ── mdrun ────────────────────────────────────────────────────────────
 echo ""
 if [ -f md.cpt ]; then
     echo ">>> Checkpoint bulundu: md.cpt  — kaldığı yerden devam..."
-    CURRENT_NS=$($GMX check -f md.cpt 2>&1 | grep "Last frame" \
+    CURRENT_NS=$(gmx_mpi check -f md.cpt 2>&1 | grep "Last frame" \
         | awk '{print $NF}' || echo "?")
     echo "    Mevcut simülasyon süresi: ~${CURRENT_NS} ps"
+    # Önceki bozuk çıktıları temizle (-noappend ile yeni part dosyaları oluşur)
+    rm -f md.log md.xtc md.edr md.trr
 
-    $GMX mdrun \
+    mpirun -np $NP $GMX mdrun \
         -v \
         -deffnm md \
         -cpi md.cpt \
-        -append \
-        -ntmpi 1 \
-        -ntomp $NTOMP \
-        -pin on \
-        -pinstride 1
+        -noappend \
+        -ntomp $NTOMP
 else
     echo ">>> İlk çalıştırma — sıfırdan başlanıyor..."
-    $GMX mdrun \
+    mpirun -np $NP $GMX mdrun \
         -v \
         -deffnm md \
-        -ntmpi 1 \
-        -ntomp $NTOMP \
-        -pin on \
-        -pinstride 1
+        -ntomp $NTOMP
 fi
 
-# ── Tamamlanma kontrolü ve otomatik yeniden gönderme ────────────────
-echo ""
-echo ">>> Simülasyon durumu kontrol ediliyor..."
+MDRUN_EXIT=$?
 
-COMPLETED_STEPS=$($GMX check -f md.cpt 2>&1 \
+# ── Tamamlanma kontrolü ──────────────────────────────────────────────
+echo ""
+echo ">>> mdrun çıkış kodu: $MDRUN_EXIT"
+
+if [ $MDRUN_EXIT -ne 0 ]; then
+    # SLURM time limit veya sinyal: GROMACS SIGTERM'i yakalar ve md.cpt yazar.
+    # md.cpt varsa → time limit nedeniyle sonlandı, resubmit yap.
+    # md.cpt yoksa → gerçek hata, durdur.
+    if [ -f md.cpt ]; then
+        echo "UYARI: mdrun non-zero çıktı (exit=$MDRUN_EXIT) ama md.cpt mevcut."
+        echo "  → SLURM time limit veya sinyal nedeniyle sonlandı, devam edilebilir."
+    else
+        echo "HATA: mdrun başarısız (exit=$MDRUN_EXIT) ve md.cpt yok — resubmit yapılmıyor."
+        echo "slurm_${SLURM_JOB_ID}.err dosyasını inceleyin."
+        exit $MDRUN_EXIT
+    fi
+fi
+
+echo ">>> Simülasyon durumu kontrol ediliyor..."
+COMPLETED_STEPS=$(gmx_mpi check -f md.cpt 2>&1 \
     | grep -oP 'Last frame\s+\K\d+' || echo "0")
 TARGET_STEPS=500000000  # 1 µs
 
 echo "  Tamamlanan adım : $COMPLETED_STEPS / $TARGET_STEPS"
 
 if [ "$COMPLETED_STEPS" -lt "$TARGET_STEPS" ] 2>/dev/null; then
-    echo "  Simülasyon henüz tamamlanmadı → Job yeniden gönderiliyor..."
-    # Yeni job gönder (mevcut script kendini yeniden çalıştırır)
+    echo "  Süre limiti aşıldı → Job yeniden gönderiliyor..."
     NEW_JOB=$(sbatch --parsable "$0")
     echo "  Yeni Job ID: $NEW_JOB"
-    echo "  md.cpt checkpoint ile devam edilecek."
 else
     echo "  ✓ 1 µs simülasyon TAMAMLANDI!"
     echo "  md.xtc  → trajektori (her 100 ps)"

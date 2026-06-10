@@ -4,9 +4,9 @@
 #  Yerel setup bittikten sonra çalıştırın
 # ══════════════════════════════════════════════════════════════════════
 
-TRUBA_USER="YOUR_USERNAME"          # ← TRUBA kullanıcı adınız
-TRUBA_HOST="levrek1.ulakbim.gov.tr" # veya barbun1.ulakbim.gov.tr
-TRUBA_DIR="/truba/home/${TRUBA_USER}/md_1tsr_carvacrol"
+TRUBA_USER="ebalcan"
+TRUBA_HOST="172.16.6.15"
+TRUBA_DIR="/arf/scratch/${TRUBA_USER}/md_1tsr_carvacrol"
 
 LOCAL_GROMACS="$(dirname "$0")/../04_gromacs_setup/gromacs_run"
 
