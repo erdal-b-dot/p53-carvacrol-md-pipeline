@@ -2,6 +2,23 @@
 
 A reproducible, step-by-step pipeline for preparing and running a 1-microsecond GROMACS molecular dynamics simulation of carvacrol bound to the p53 DNA-binding domain (PDB: 1TSR), with PROPKA-guided protonation, AutoDock Vina docking, and AMBER14SB/GAFF2 force fields.
 
+> **Status (2026-06-29):** 1 µs simulation complete. Full trajectory analysis added in `06_md_analysis/` including RMSD, RMSF, Rg, SASA, protein–ligand minimum distance, and PCA. Manuscript draft available in `07_manuscript/`.
+
+## Key Findings
+
+| Metric | Value |
+|--------|-------|
+| Protein backbone RMSD (mean ± SD) | 0.27 ± 0.07 nm — **structurally stable** |
+| Radius of gyration | 1.657 ± 0.010 nm — **no unfolding** |
+| Carvacrol RMSD from initial pose | 3.04 ± 1.20 nm — **exits initial pocket** |
+| **Protein–ligand contact (<5 Å)** | **75.0% of 1 µs trajectory** |
+| Bulk solvent (>20 Å) | 0.7% only |
+| PCA: PCs for 90% variance | 8 — high conformational heterogeneity (L3 loop) |
+
+**Interpretation:** Carvacrol exits the initial docking pose rapidly but maintains persistent surface contact (75% of simulation within 5 Å). This *surface-sliding* behavior is characteristic of fragment-class molecules (<300 Da) at shallow protein–protein interaction interfaces and positions carvacrol as a validated fragment hit for fragment-based drug design (FBDD).
+
+---
+
 ---
 
 ## Overview
@@ -25,25 +42,49 @@ A reproducible, step-by-step pipeline for preparing and running a 1-microsecond 
 ## Directory Structure
 
 ```
-md_1tsr_carvacrol/
+p53-carvacrol-md-pipeline/
 ├── 01_protein_prep/
-│   └── prepare_protein.sh      # Download 1TSR, remove DNA, run PROPKA3
+│   └── prepare_protein.sh         # Download 1TSR, remove DNA, run PROPKA3
 ├── 02_ligand_prep/
-│   └── prepare_ligand.sh       # SDF → MOL2 → ACPYPE (GAFF2)
+│   └── prepare_ligand.sh          # SDF → MOL2 → ACPYPE (GAFF2)
 ├── 03_docking/
-│   └── run_docking.sh          # Meeko receptor/ligand prep + Vina docking
+│   └── run_docking.sh             # Meeko receptor/ligand prep + Vina docking
 ├── 04_gromacs_setup/
-│   ├── setup_topology.sh       # pdb2gmx, solvate, ions, EM, NVT, NPT
+│   ├── setup_topology.sh          # pdb2gmx, solvate, ions, EM, NVT, NPT
 │   └── mdp/
 │       ├── ions.mdp
-│       ├── minim.mdp           # Energy minimization
-│       ├── nvt.mdp             # 100 ps NVT equilibration (310 K)
-│       ├── npt.mdp             # 1 ns NPT equilibration (310 K, 1 bar)
-│       └── md_1us.mdp          # 1 µs production MD
-└── 05_truba/
-    ├── slurm_1us.sh            # Self-resubmitting SLURM script
-    └── transfer_files.sh       # rsync files to TRUBA
+│       ├── minim.mdp              # Energy minimization
+│       ├── nvt.mdp                # 100 ps NVT equilibration (310 K)
+│       ├── npt.mdp                # 1 ns NPT equilibration (310 K, 1 bar)
+│       └── md_1us.mdp             # 1 µs production MD
+├── 05_truba/
+│   ├── slurm_1us.sh               # Self-resubmitting SLURM script
+│   └── transfer_files.sh          # rsync files to TRUBA
+├── 06_md_analysis/                # NEW — 1 µs trajectory analysis
+│   ├── scripts/
+│   │   ├── plot_md_analysis.py    # RMSD, RMSF, Rg, SASA figures
+│   │   ├── create_mindist_figure.py  # Protein–ligand mindist (gmx mindist output)
+│   │   └── run_pca_mdanalysis.py  # MDAnalysis PCA of backbone conformations
+│   ├── results/
+│   │   ├── rmsd_backbone.xvg      # Backbone RMSD vs time
+│   │   ├── rmsd_ligand.xvg        # Carvacrol RMSD vs time
+│   │   ├── rmsf_backbone.xvg      # Per-residue RMSF
+│   │   ├── gyrate.xvg             # Radius of gyration
+│   │   ├── sasa.xvg               # Solvent-accessible surface area
+│   │   ├── mindist_prot_lig.xvg   # Protein–ligand minimum distance
+│   │   └── pca_variance.txt       # PCA explained variance per PC
+│   └── figures/
+│       ├── fig1_rmsd.png/pdf      # Backbone + carvacrol RMSD
+│       ├── fig2_rmsf.png/pdf      # Per-residue RMSF
+│       ├── fig3_rg_sasa.png/pdf   # Rg + SASA panel
+│       ├── fig4_combined.png/pdf  # Publication multi-panel
+│       ├── fig5_mindist.png/pdf   # Mindist analysis (NEW)
+│       └── fig6_pca.png/pdf       # PCA conformational landscape (NEW)
+└── 07_manuscript/                 # NEW — manuscript draft
+    └── carvacrol_1us_manuscript_v5.md
 ```
+
+> **Large files excluded from git** (see `.gitignore`): trajectory files (`.xtc`, `.trr`, ~1 GB each), topology (`.tpr`, `.gro`), energy files (`.edr`). Request these from the authors or regenerate using the pipeline scripts.
 
 ---
 
