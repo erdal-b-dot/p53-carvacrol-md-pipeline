@@ -64,7 +64,7 @@ All statistical analyses used GraphPad Prism 9 (v9.3.1; GraphPad Software, San D
 
 #### 2.9.1. Receptor and Ligand Preparation
 
-The crystal structure of the human p53 core domain (PDB: 1TSR, resolution 2.20 Å) was retrieved from the RCSB Protein Data Bank. Chain A—the p53 monomer in its functional DNA-binding state—was isolated. Water molecules, co-crystallized heteroatoms, and bound DNA were removed. Histidine protonation states were assigned at pH 7.4 using PROPKA 3.5; glutamate and aspartate residues were treated as deprotonated; lysine and arginine as protonated. The receptor was converted to PDBQT format using AutoDock Tools (ADT) 1.5.7; polar hydrogens were added and Gasteiger charges assigned. Carvacrol (PubChem CID: 10838; MW 150.22 Da; SMILES: `Cc1ccc(C(C)C)cc1O`) was retrieved from PubChem and geometry-optimized by the MMFF94 force field in RDKit (v2023.09.1). Ligand PDBQT conversion was performed with Meeko (v0.7.1), with the phenolic hydroxyl set as a rotatable bond.
+The crystal structure of the human p53 core domain (PDB: 1TSR, resolution 2.20 Å) was retrieved from the RCSB Protein Data Bank. Chain B—the p53 monomer in its functional DNA-binding state—was isolated. Water molecules, co-crystallized heteroatoms, and bound DNA were removed. Histidine protonation states were assigned at pH 7.4 using PROPKA 3.5; glutamate and aspartate residues were treated as deprotonated; lysine and arginine as protonated. The receptor was converted to PDBQT format using AutoDock Tools (ADT) 1.5.7; polar hydrogens were added and Gasteiger charges assigned. Carvacrol (PubChem CID: 10838; MW 150.22 Da; SMILES: `Cc1ccc(C(C)C)cc1O`) was retrieved from PubChem and geometry-optimized by the MMFF94 force field in RDKit (v2023.09.1). Ligand PDBQT conversion was performed with Meeko (v0.7.1), with the phenolic hydroxyl set as a rotatable bond.
 
 #### 2.9.2. Docking Protocol
 
@@ -135,7 +135,7 @@ Anti-p53 immunofluorescence showed FITC signal predominantly nuclear in both cel
 
 MDC staining revealed a significant increase in autophagic vesicle counts per cell in carvacrol-treated MCF-7 cancer cells compared to untreated controls (Figure 4; mean ~38 vs. ~65 vesicles/cell; ****p < 0.0001, Mann–Whitney U test), indicating robust autophagy induction at the IC50 concentration. In MCF-10A normal breast cells, vesicle counts did not change significantly (mean ~41 vs. ~46 vesicles/cell; p > 0.05, Mann–Whitney U test), consistent with the selective cytotoxic effects observed in the MTT assay.
 
-> **Figure 4.** MDC staining for autophagic vesicle quantification. Representative micrographs (scale bar: 20 µm): (A) MCF-7 control; (B) MCF-10A control; (C) MCF-7 + carvacrol IC50; (D) MCF-10A + carvacrol IC50. Vesicle counts: (E) MCF-7—significant increase from ~35 (control) to ~63 vesicles/cell (carvacrol); ****P < 0.0001. (F) MCF-10A—no significant change; P > 0.05. Mann–Whitney U test; mean ± SEM (n ≥ 13 cells per group).
+> **Figure 4.** MDC staining for autophagic vesicle quantification. Representative micrographs (scale bar: 20 µm): (A) MCF-7 control; (B) MCF-10A control; (C) MCF-7 + carvacrol IC50; (D) MCF-10A + carvacrol IC50. Vesicle counts: (E) MCF-7—significant increase from ~38 (control) to ~65 vesicles/cell (carvacrol); ****p < 0.0001. (F) MCF-10A—no significant change; P > 0.05. Mann–Whitney U test; mean ± SEM (n ≥ 13 cells per group).
 
 ### 3.6. Molecular Docking and Binding Profile
 
@@ -149,7 +149,7 @@ The phenolic hydroxyl group of carvacrol forms hydrogen bonds with Ser99 backbon
 
 #### 3.6.2. PLIP Interaction Analysis and 3D Binding Pose
 
-To complement the LigPlot+ static interaction map, the best docking pose was re-analyzed with PLIP v3.0.0 (Protein–Ligand Interaction Profiler) using the protonated receptor complex (Figure 10). PLIP identified four hydrophobic contacts—GLN136 (3.59 Å) and LEU137 (three contacts; 3.62–3.68 Å)—and a single hydrogen bond between the carvacrol phenolic hydroxyl (donor) and the LYS139 sidechain nitrogen (acceptor; donor–acceptor distance 3.13 Å; H–acceptor distance 2.47 Å; angle 127.5°). Note that PLIP analysis uses chain B numbering; these residues correspond to GLN244, LEU245, and LYS247 in the original 1TSR full-chain reference sequence. The hydrogen bond angle is within acceptable range (>120°), suggesting a geometrically productive contact. The hydrophobic surface formed by LEU137 provides the primary non-polar burial site for carvacrol's isopropyl and aromatic moieties, consistent with the GROMACS-based contact analysis that placed carvacrol <5 Å from protein surface for 75% of the 1 µs trajectory. The 3D PyMOL visualization (Figure 10B) shows carvacrol (orange sticks) nestled at the protein loop interface, with LYS139 (gold), LEU137 (green), and GLN136 (cyan) forming the binding environment.
+To complement the LigPlot+ static interaction map, the best docking pose was re-analyzed with PLIP v3.0.0 (Protein–Ligand Interaction Profiler) using the protonated receptor complex (Figure 10). PLIP identified four hydrophobic contacts—GLN136 (3.59 Å) and LEU137 (three contacts; 3.62–3.68 Å)—and a single hydrogen bond between the carvacrol phenolic hydroxyl (donor) and the LYS139 sidechain nitrogen (acceptor; donor–acceptor distance 3.13 Å; H–acceptor distance 2.47 Å; angle 127.5°). Note that PLIP analysis uses the original PDB residue numbering of chain B; these residue numbers (136, 137, 139) correspond directly to p53 residues Gln136, Leu137, and Lys139. The hydrogen bond angle is within acceptable range (>120°), suggesting a geometrically productive contact. The hydrophobic surface formed by LEU137 provides the primary non-polar burial site for carvacrol's isopropyl and aromatic moieties, consistent with the GROMACS-based contact analysis that placed carvacrol <5 Å from protein surface for 75% of the 1 µs trajectory. The 3D PyMOL visualization (Figure 10B) shows carvacrol (orange sticks) nestled at the protein loop interface, with LYS139 (gold), LEU137 (green), and GLN136 (cyan) forming the binding environment.
 
 > **Figure 10.** Protein–carvacrol interaction analysis at the best AutoDock Vina docking pose. **(A)** PLIP 3.0 2D schematic: carvacrol (hexagonal ring) with hydroxyl (-OH), methyl (-CH₃), and isopropyl (-CH(CH₃)₂) substituents. Hydrophobic contacts (green dashed lines; distances 3.59–3.68 Å): GLN136 and LEU137. Hydrogen bond (orange dashed line): phenolic -OH donates to LYS139 sidechain NZ (D-A: 3.13 Å; H-A: 2.47 Å). **(B)** PyMOL 3.1 3D binding pose. Gray: p53 protein cartoon/surface (transparent). Orange sticks: carvacrol. Cyan: GLN136; Green: LEU137; Gold: LYS139. Yellow dashed line: H-bond (3.13 Å). All residues are numbered per chain B of the analyzed complex.
 
@@ -248,11 +248,11 @@ Predicted gastrointestinal absorption was high: HIA = 90.84% (pkCSM), Caco-2 log
 
 #### 3.8.3. Distribution
 
-Plasma protein binding: 91.9% (Fu = 7.5%; ADMETlab 3.0). VDss = 0.206 L/kg. TPSA of 20.23 Å² predicts moderate CNS penetration. OATP1B1, OATP1B3, and BSEP inhibition represent hepatobiliary considerations for clinical development.
+Plasma protein binding: 91.9% (Fu = 7.5%; ADMETlab 2.0). VDss = 0.206 L/kg. TPSA of 20.23 Å² predicts moderate CNS penetration. OATP1B1, OATP1B3, and BSEP inhibition represent hepatobiliary considerations for clinical development.
 
 #### 3.8.4. Metabolic Profile and CYP450 Interactions
 
-Carvacrol is a substrate and inhibitor of CYP1A2 (primary) and CYP3A4 (major clearance), with additional CYP2B6 and CYP2C8 inhibition (ADMETlab 3.0). HLM stability is moderate; plasma half-life ≈ 0.85 h.
+Carvacrol is a substrate and inhibitor of CYP1A2 (primary) and CYP3A4 (major clearance), with additional CYP2B6 and CYP2C8 inhibition (ADMETlab 2.0). HLM stability is moderate; plasma half-life ≈ 0.85 h.
 
 > **Table 3.** Absorption, distribution, and metabolism profile of carvacrol.
 
@@ -265,25 +265,25 @@ Carvacrol is a substrate and inhibitor of CYP1A2 (primary) and CYP3A4 (major cle
 | P-glycoprotein substrate | No | pkCSM, SwissADME |
 | Skin permeability (log Kp) | −1.62 | pkCSM |
 | **Distribution** | | |
-| Plasma protein binding (PPB) | 91.9% | ADMETlab 3.0 |
-| Unbound fraction (Fu) | 7.5% | ADMETlab 3.0 |
-| Volume of distribution (VDss) | 0.206 L/kg | ADMETlab 3.0 |
+| Plasma protein binding (PPB) | 91.9% | ADMETlab 2.0 |
+| Unbound fraction (Fu) | 7.5% | ADMETlab 2.0 |
+| Volume of distribution (VDss) | 0.206 L/kg | ADMETlab 2.0 |
 | BBB permeability | Moderate | TPSA = 20.23 Å² |
 | **Metabolism** | | |
-| Primary CYP substrate | CYP1A2 | ADMETlab 3.0 |
-| CYP3A4 (major clearance) | Substrate | ADMETlab 3.0 |
-| CYP inhibition | CYP2B6, CYP2C8, CYP1A2 | ADMETlab 3.0 |
-| HLM metabolic stability | Moderate | ADMETlab 3.0 |
-| Plasma half-life (t₁/₂) | ≈0.85 h | ADMETlab 3.0 |
+| Primary CYP substrate | CYP1A2 | ADMETlab 2.0 |
+| CYP3A4 (major clearance) | Substrate | ADMETlab 2.0 |
+| CYP inhibition | CYP2B6, CYP2C8, CYP1A2 | ADMETlab 2.0 |
+| HLM metabolic stability | Moderate | ADMETlab 2.0 |
+| Plasma half-life (t₁/₂) | ≈0.85 h | ADMETlab 2.0 |
 | OATP1B1/1B3 inhibition | Possible | Hepatobiliary concern |
 
-ADMETlab 3.0: Xiong et al. (2021); pkCSM: Pires et al. (2015); SwissADME: Daina et al. (2017).
+ADMETlab 2.0: Xiong et al. (2021); pkCSM: Pires et al. (2015); SwissADME: Daina et al. (2017).
 
 #### 3.8.5. In Silico Toxicity Assessment
 
-ADMETlab 3.0 predicted low hERG cardiotoxicity at 1 µM (0.106), low DILI (0.202), and low genotoxicity (0.119). High-risk flags for skin sensitization (0.717), eye irritation (0.996), eye corrosion (0.968), carcinogenicity (0.606), and reactive compound formation (0.978) are consistent with known irritant properties of concentrated phenolic monoterpenes and expected to be mitigated at the sub-millimolar concentrations relevant to p53 modulation.
+ADMETlab 2.0 predicted low hERG cardiotoxicity at 1 µM (0.106), low DILI (0.202), and low genotoxicity (0.119). High-risk flags for skin sensitization (0.717), eye irritation (0.996), eye corrosion (0.968), carcinogenicity (0.606), and reactive compound formation (0.978) are consistent with known irritant properties of concentrated phenolic monoterpenes and expected to be mitigated at the sub-millimolar concentrations relevant to p53 modulation.
 
-> **Table 4.** In silico toxicity prediction profile of carvacrol (ADMETlab 3.0).
+> **Table 4.** In silico toxicity prediction profile of carvacrol (ADMETlab 2.0).
 
 | Endpoint | Predicted Score | Risk Level | Comment |
 |----------|-----------------|------------|---------|
@@ -296,7 +296,7 @@ ADMETlab 3.0 predicted low hERG cardiotoxicity at 1 µM (0.106), low DILI (0.202
 | Carcinogenicity | 0.606 | Moderate–High | In vivo context dependent |
 | Reactive compound formation | 0.978 | High | Phenol oxidation potential |
 
-Scores: 0–1 scale; ≥0.5 = high risk. All high-risk endpoints are concentration-dependent and expected to be mitigated at the sub-millimolar concentrations relevant to p53 modulation. ADMETlab 3.0: Xiong et al. (2021).
+Scores: 0–1 scale; ≥0.5 = high risk. All high-risk endpoints are concentration-dependent and expected to be mitigated at the sub-millimolar concentrations relevant to p53 modulation. ADMETlab 2.0: Xiong et al. (2021).
 
 #### 3.8.6. Integrated ADMET Assessment
 
@@ -360,7 +360,7 @@ Surface sliding is not a failure of binding—it is a recognized behavior of fra
 
 **Fragment growing strategy.** The virtual screening of five C4- and isopropyl-modified analogs demonstrates that carvacrol's MW-150 scaffold has accessible synthetic handles for potency improvement. A4 (4-aminoethyl) achieves the largest single-atom-normalized improvement (ΔΔG = −0.78 kcal/mol; LE = −0.355) by adding a flexible arm capable of extending the H-bond network beyond the parent Ser99/Arg267 contacts. A2 (5-cyclohexyl) is strategically different: it gains affinity purely through improved hydrophobic burial (ΔΔG = −0.74 kcal/mol) without increasing polarity (ΔTPSA = 0), making it the preferred candidate from an absorption standpoint. PCA-guided design criteria should guide the next iteration: because 8 PCs account for 90% of the L3 loop conformational variance, a successful lead must accommodate a family of loop geometries. A rigid extension (A2) scores well computationally but may clash with specific conformational substates that are poorly represented in a single docking calculation. A flexible polar arm (A4) is more conformationally tolerant. Both warrant synthesis and SPR or ITC affinity measurement against recombinant 1TSR to test whether the computed ΔΔG improvements translate to measurable Kd decreases from the parent Kd ≈ 2.2 mM baseline.
 
-**Cellular validation.** Immunofluorescence showed no significant change in total p53 CTCF in MCF-7 cells (p > 0.05), while a significant decrease was observed in MCF-10A normal cells (*p < 0.05). The absence of a significant change in MCF-7 p53 protein levels is consistent with complex regulation involving MDM2-mediated degradation and does not preclude carvacrol-induced changes in p53 conformation or activity. By contrast, MDC staining confirmed robust and selective autophagy induction in MCF-7 cells (****p < 0.0001) with no significant effect in MCF-10A cells, confirming biologically relevant and cell-type-selective effects at experimentally accessible concentrations. The millimolar IC50 range—far above the thermodynamic KD implied by a −4.21 kcal/mol docking score—is consistent with weak fragment binding: at low individual affinity, high concentrations saturate multiple surface contact sites simultaneously, producing concentration-dependent cellular effects through collective engagement rather than stoichiometric pocket occupancy.
+**Cellular validation.** Immunofluorescence showed no significant change in total p53 CTCF in MCF-7 cells (p > 0.05), while a significant decrease was observed in MCF-10A normal cells (*p < 0.05). The absence of a significant change in MCF-7 p53 protein levels is consistent with complex regulation involving MDM2-mediated degradation and does not preclude carvacrol-induced changes in p53 conformation or activity. By contrast, MDC staining confirmed robust and selective autophagy induction in MCF-7 cells (****p < 0.0001) with no significant effect in MCF-10A cells, confirming biologically relevant and cell-type-selective effects at experimentally accessible concentrations. The millimolar IC50 range—consistent with the MM-GBSA-derived Kd ≈ 2.2 mM—is consistent with weak fragment binding: at low individual affinity, high concentrations saturate multiple surface contact sites simultaneously, producing concentration-dependent cellular effects through collective engagement rather than stoichiometric pocket occupancy.
 
 **Pharmacokinetics.** Carvacrol's oral bioavailability profile (zero Lipinski violations; HIA 90.84%; no P-gp substrate activity) provides a sound pharmacokinetic foundation. Short half-life (~0.85 h) and CYP1A2-mediated metabolism are addressable through structural modification or sustained-release formulation.
 
@@ -486,8 +486,8 @@ Xiong, G., Wu, Z., Yi, J., Fu, L., Yang, Z., Hsieh, C., Jiang, M., Liu, X., Han,
 
 **Table 2.** Physicochemical properties and drug-likeness of carvacrol (RDKit, SwissADME).
 
-**Table 3.** Absorption, distribution, and metabolism profile of carvacrol (pkCSM, SwissADME, ADMETlab 3.0).
+**Table 3.** Absorption, distribution, and metabolism profile of carvacrol (pkCSM, SwissADME, ADMETlab 2.0).
 
-**Table 4.** In silico toxicity prediction profile of carvacrol (ADMETlab 3.0).
+**Table 4.** In silico toxicity prediction profile of carvacrol (ADMETlab 2.0).
 
 **Table 5.** Fragment growing analogs (A1–A5): SMILES, MW, logP, TPSA, HBD/HBA, docking score, ΔΔG, and ligand efficiency.
