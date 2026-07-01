@@ -2,7 +2,7 @@
 
 A reproducible, step-by-step pipeline for preparing and running a 1-microsecond GROMACS molecular dynamics simulation of carvacrol bound to the p53 DNA-binding domain (PDB: 1TSR), with PROPKA-guided protonation, AutoDock Vina docking, and AMBER14SB/GAFF2 force fields.
 
-> **Status (2026-06-29):** 1 µs simulation complete. Full trajectory analysis added in `06_md_analysis/` including RMSD, RMSF, Rg, SASA, protein–ligand minimum distance, and PCA. Manuscript draft available in `07_manuscript/`.
+> **Status (2026-07-01):** 1 µs simulation complete. Docking/MD consistency verified directly against the trajectory (see **Docking Site Validation** below). Fragment-growing analogs (Section 3.9) redesigned and redocked at the validated site. ADMET analysis expanded. Manuscript **v8** available in `07_manuscript/`.
 
 ## Key Findings
 
@@ -14,8 +14,19 @@ A reproducible, step-by-step pipeline for preparing and running a 1-microsecond 
 | **Protein–ligand contact (<5 Å)** | **75.0% of 1 µs trajectory** |
 | Bulk solvent (>20 Å) | 0.7% only |
 | PCA: PCs for 90% variance | 8 — high conformational heterogeneity (L3 loop) |
+| **Validated docking site** | ARG174 / ASP207 / PHE212 (confirmed by direct ligand-to-residue distance at trajectory frame 0: 3.4 Å) |
+| **Docking score (site-restricted)** | −4.38 kcal/mol (reproducible across seeds, ±0.004 kcal/mol; see Docking Site Validation) |
 
 **Interpretation:** Carvacrol exits the initial docking pose rapidly but maintains persistent surface contact (75% of simulation within 5 Å). This *surface-sliding* behavior is characteristic of fragment-class molecules (<300 Da) at shallow protein–protein interaction interfaces and positions carvacrol as a validated fragment hit for fragment-based drug design (FBDD).
+
+## Docking Site Validation
+
+An earlier version of this pipeline's docking result (`03_docking/vina_log.txt`, blind box, exhaustiveness = 32) reports **−6.056 kcal/mol**. This number should **not** be read as contradicting the manuscript's reported **−4.377/−4.38 kcal/mol** — they come from different search-box protocols, and only the latter is the one actually used to seed and validate against the 1 µs MD trajectory. Two things were checked directly (2026-07-01):
+
+1. **Which pose actually seeded the MD run?** Loading the production trajectory (`md.tpr` + first frame of `md_center.xtc`) and measuring the ligand's distance to candidate sites shows it starts 3.4 Å from ARG174/ASP207/PHE212 — confirming this, not any other pocket, is the pose the simulation is built on.
+2. **Is the docking score box-size-sensitive?** Re-docking the parent ligand at the validated site across box sizes (20–99 Å) and exhaustiveness levels (8–32), 3 random seeds each: a tight 20 Å box centered on the site reproduces **−4.38 kcal/mol reliably (σ < 0.01)** and stays confirmed at ARG174/ASP207/PHE212. Looser/blind boxes (40–99 Å) let the ligand escape to a *different* competing pocket elsewhere on the p53 surface (e.g., the Ser99/Pro98 region) rather than refining the same pose — and even at exhaustiveness = 32, scores from the largest box vary run-to-run (−4.7 to −6.1 kcal/mol), i.e., not fully converged. **−4.38 kcal/mol is therefore the reproducible, site-validated number reported in the manuscript**; −6.056 kcal/mol reflects a different, less-constrained search rather than a more accurate estimate at the same site.
+
+This is itself consistent with the paper's central finding: p53's surface offers several comparable shallow pockets for this small fragment, and unconstrained docking searches will land on whichever one scores best for a given box/seed — exactly the "surface sliding" / multi-site promiscuity documented by the MD contact-frequency analysis.
 
 ---
 
@@ -78,10 +89,17 @@ p53-carvacrol-md-pipeline/
 │       ├── fig2_rmsf.png/pdf      # Per-residue RMSF
 │       ├── fig3_rg_sasa.png/pdf   # Rg + SASA panel
 │       ├── fig4_combined.png/pdf  # Publication multi-panel
-│       ├── fig5_mindist.png/pdf   # Mindist analysis (NEW)
-│       └── fig6_pca.png/pdf       # PCA conformational landscape (NEW)
-└── 07_manuscript/                 # NEW — manuscript draft
-    └── carvacrol_1us_manuscript_v5.md
+│       ├── fig5_mindist.png/pdf   # Mindist analysis
+│       ├── fig6_pca.png/pdf       # PCA conformational landscape
+│       ├── fig6_plip_pymol_combined.png  # PLIP + PyMOL docking pose (ARG174/ASP207/PHE212)
+│       ├── fig9_fbdd.png/pdf      # Fragment-growing SAR (B1–B5, site-validated docking) — UPDATED 2026-07-01
+│       └── fig12_contact_hbond.png  # Per-residue contact frequency + H-bond occupancy
+└── 07_manuscript/                 # Manuscript draft (v8, 2026-07-01)
+    ├── carvacrol_1us_manuscript_v8.md
+    ├── Carvacrol_ADMET_Figure.png  # ADMET dashboard (ADMETlab 3.0 + pkCSM + SwissADME)
+    ├── MCF7_IC50.png / MCF10A_IC50.png
+    ├── in_vitro/                  # Immunofluorescence + MDC figures
+    └── figures/                   # Docking/MD figures used in the manuscript
 ```
 
 > **Large files excluded from git** (see `.gitignore`): trajectory files (`.xtc`, `.trr`, ~1 GB each), topology (`.tpr`, `.gro`), energy files (`.edr`). Request these from the authors or regenerate using the pipeline scripts.
@@ -159,6 +177,8 @@ bash run_docking.sh
 - Runs **AutoDock Vina** (exhaustiveness = 32, 10 binding modes, seed = 42)
 - Extracts the top-ranked pose as `carvacrol_best_pose.pdb`
 - Generates `1TSR_carvacrol_complex.pdb` for visualization
+
+> **Note:** this blind, whole-protein box is useful for an initial exploratory search, but the score it returns is sensitive to box size and is *not* the number reported in the manuscript — see **Docking Site Validation** above for why, and use a site-restricted box (centered on the validated ARG174/ASP207/PHE212 pocket) to reproduce the paper's reported affinity.
 
 ---
 
