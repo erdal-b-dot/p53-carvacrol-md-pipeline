@@ -18,7 +18,7 @@ SYSTEM OVERVIEW
 
 FORCE FIELD PARAMETERS
 -----------------------
-  Protein           : AMBER14SB
+  Protein           : AMBER99SB-ILDN
   Ligand            : GAFF2 (atom types) + AM1-BCC (partial charges, ACPYPE)
   Water             : TIP3P
   Solvent box       : Dodecahedron, 1.2 nm clearance from protein surface
@@ -99,7 +99,7 @@ TRUBA JOB CONFIGURATION
 SOFTWARE CITATIONS
 -------------------
   1. GROMACS 2024:  Abraham et al., SoftwareX 1-2, 19-25 (2015)
-  2. AMBER14SB:     Maier et al., J. Chem. Theory Comput. 11, 3696 (2015)
+  2. AMBER99SB-ILDN: Lindorff-Larsen et al., Proteins 78, 1950 (2010)
   3. GAFF2/ACPYPE:  Wang et al., J. Comput. Chem. 25, 1157 (2004)
                     Sousa da Silva & Vranken, BMC Res. Notes 5, 367 (2012)
   4. Vina 1.2:      Eberhardt et al., J. Chem. Inf. Model. 61, 3891 (2021)
