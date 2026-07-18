@@ -1,6 +1,6 @@
 # MD Pipeline: p53 (1TSR) × Carvacrol — 1 µs Molecular Dynamics Simulation
 
-A reproducible, step-by-step pipeline for preparing and running a 1-microsecond GROMACS molecular dynamics simulation of carvacrol bound to the p53 DNA-binding domain (PDB: 1TSR), with PROPKA-guided protonation, AutoDock Vina docking, and AMBER14SB/GAFF2 force fields.
+A reproducible, step-by-step pipeline for preparing and running a 1-microsecond GROMACS molecular dynamics simulation of carvacrol bound to the p53 DNA-binding domain (PDB: 1TSR), with PROPKA-guided protonation, AutoDock Vina docking, and AMBER99SB-ILDN/GAFF2 force fields.
 
 > **Status (2026-07-01):** 1 µs simulation complete. Docking/MD consistency verified directly against the trajectory (see **Docking Site Validation** below). Fragment-growing analogs (Section 3.9) redesigned and redocked at the validated site. ADMET analysis expanded. Manuscript **v8** available in `07_manuscript/`.
 
@@ -40,7 +40,7 @@ This is itself consistent with the paper's central finding: p53's surface offers
 | **Ligand** | Carvacrol (2-methyl-5-isopropylphenol) — PubChem CID: [10364](https://pubchem.ncbi.nlm.nih.gov/compound/10364) |
 | **Simulation length** | 1 µs (500,000,000 steps × 2 fs) |
 | **MD engine** | GROMACS 2024.1-oneapi-2024 |
-| **Protein FF** | AMBER14SB |
+| **Protein FF** | AMBER99SB-ILDN |
 | **Ligand FF** | GAFF2 + AM1-BCC charges (ACPYPE) |
 | **Water model** | TIP3P, dodecahedron box (1.2 nm clearance) |
 | **Salt** | 0.15 M NaCl (physiological) |
@@ -191,7 +191,7 @@ bash setup_topology.sh
 ```
 
 **What it does:**
-1. `pdb2gmx` — AMBER14SB topology with PROPKA-guided His protonation
+1. `pdb2gmx` — AMBER99SB-ILDN topology with PROPKA-guided His protonation
 2. Merges protein and ligand GRO files
 3. Generates ligand position restraints (`posre_LIG.itp`)
 4. `editconf` — dodecahedral simulation box, 1.2 nm solvent clearance
@@ -263,7 +263,7 @@ md.gro     — Final coordinates
 If you use this pipeline, please cite:
 
 - **GROMACS 2024:** Abraham et al., *SoftwareX* (2015); [doi:10.1016/j.softx.2015.06.001](https://doi.org/10.1016/j.softx.2015.06.001)
-- **AMBER14SB:** Maier et al., *J. Chem. Theory Comput.* 11, 3696 (2015)
+- **AMBER99SB-ILDN:** Lindorff-Larsen et al., *Proteins* 78, 1950 (2010)
 - **GAFF2 / ACPYPE:** Wang et al., *J. Comput. Chem.* 25, 1157 (2004); Sousa da Silva & Vranken, *BMC Res. Notes* 5, 367 (2012)
 - **AutoDock Vina 1.2:** Eberhardt et al., *J. Chem. Inf. Model.* 61, 3891 (2021)
 - **PROPKA3:** Olsson et al., *J. Chem. Theory Comput.* 7, 525 (2011)
