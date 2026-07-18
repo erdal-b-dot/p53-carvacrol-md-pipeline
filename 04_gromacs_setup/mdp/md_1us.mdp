@@ -1,5 +1,5 @@
 ; md_1us.mdp — Üretim MD: 1 MİKROSANİYE (310 K / 1 bar)
-; AMBER14SB + GAFF2, TIP3P su, 0.15 M NaCl
+; AMBER99SB-ILDN + GAFF2, TIP3P su, 0.15 M NaCl
 ; 500,000,000 adım × 0.002 ps = 1,000,000 ps = 1 µs
 
 integrator          = md
