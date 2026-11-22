@@ -1,4 +1,16 @@
 ================================================================================
+  v2.0.0 (2026-11-22) REVISION NOTE
+  This pipeline now covers THREE independent 1 us holo replicas (replicas 1-3,
+  randomized initial velocities, otherwise identical conditions) and ONE 1 us
+  ligand-free (apo) control. Processed outputs: 06_md_analysis/replicas_apo/.
+  End-state MM-GBSA was recomputed under a revised protocol (GB-Neck2, igb=8);
+  see 06_md_analysis/mmgbsa_revised/. The settings below (force field, box, salt,
+  thermostat/barostat, equilibration, 1 us production) are IDENTICAL for every
+  replica and the apo control; replicas differ only in the initial-velocity seed,
+  and the apo run omits the ligand.
+================================================================================
+
+================================================================================
   MD PIPELINE SUMMARY: p53 (1TSR) × Carvacrol — 1 µs Molecular Dynamics
   Generated: 2026-06-02
 ================================================================================

@@ -1,0 +1,21 @@
+{
+  "title": "erdal-b-dot/p53-carvacrol-md-pipeline: v2.0.0 — Revision release (3 replicas + apo control, revised MM-GBSA)",
+  "version": "v2.0.0",
+  "upload_type": "software",
+  "access_right": "open",
+  "license": "MIT",
+  "description": "<p>v2.0.0 &mdash; Revision release.</p><p>Reproducible pipeline for microsecond GROMACS molecular dynamics of carvacrol with the wild-type p53 DNA-binding domain (PDB: 1TSR), supporting the manuscript <em>\"Carvacrol Makes Only Transient, Weak Surface Contact with the Wild-Type p53 Core Domain in Microsecond Simulations and Shows Non-Selective Millimolar Cytotoxicity in Breast Epithelial Cells.\"</em></p><p><strong>New in v2.0.0:</strong></p><ul><li>Two additional independent 1 &micro;s holo replicas (replicas 2 and 3; randomized initial velocities, otherwise identical conditions) and one 1 &micro;s ligand-free (apo) control.</li><li>Processed reproducibility outputs for all four systems (RMSD, RMSF, radius of gyration, SASA, minimum protein&ndash;ligand distance, contact count, per-residue contact frequency, H-bond occupancy, PCA), plus a cross-replica summary table.</li><li>Revised end-state MM-GBSA protocol (GB-Neck2, igb = 8, mbondi3, 199 frames over 5&ndash;995 ns, 310 K); reported as a qualitative, ensemble-level indicator only, with no dissociation constant derived.</li><li>Per-residue MM-GBSA decomposition repeated over the complete receptor.</li></ul><p><strong>System:</strong> Protein force field AMBER99SB-ILDN; ligand GAFF2 (AM1-BCC, ACPYPE); water TIP3P; 0.15 M NaCl; 310 K; GROMACS 2024.1; TRUBA HPC.</p><p>Raw trajectory files (.xtc/.trr) are not included due to size and are available from the corresponding author on reasonable request.</p>",
+  "creators": [
+    {"name": "Balcan, Erdal", "affiliation": "Manisa Celal Bayar University, Faculty of Engineering and Natural Sciences, Department of Biology, Molecular Biology Section, Manisa, Turkey", "orcid": "0000-0001-7675-1386"},
+    {"name": "Tuğrul, Berrin", "affiliation": "Manisa Celal Bayar University", "orcid": "0000-0003-0844-7766"},
+    {"name": "Türker, Gizem", "affiliation": "Manisa Celal Bayar University"},
+    {"name": "Çöllü, Fatih", "affiliation": "Manisa Celal Bayar University", "orcid": "0000-0001-6978-8404"}
+  ],
+  "keywords": [
+    "p53", "carvacrol", "molecular dynamics", "GROMACS", "MM-GBSA", "fragment-based drug design",
+    "1TSR", "surface contact", "reproducibility", "apo control"
+  ],
+  "related_identifiers": [
+    {"identifier": "https://github.com/erdal-b-dot/p53-carvacrol-md-pipeline/tree/v2.0.0", "relation": "isSupplementTo", "scheme": "url"}
+  ]
+}

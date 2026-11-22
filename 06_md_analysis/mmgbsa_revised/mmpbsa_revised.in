@@ -1,0 +1,25 @@
+Revised MM-GBSA input (GB-Neck2 / igb=8) — matches the manuscript Methods.
+# NOTE: This input is written to match the revised protocol described in the
+# manuscript Methods. Verify against the exact input used in the production run
+# before relying on it; replace with the original run input if they differ.
+&general
+  sys_name     = "carvacrol_p53_1TSR",
+  startframe   = 1,
+  endframe     = 199,
+  interval     = 1,
+  temperature  = 310.0,
+  forcefields  = "oldff/leaprc.ff99SBildn","leaprc.gaff2",
+  PBRadii      = 8,          # mbondi3
+/
+&gb
+  igb          = 8,          # GB-Neck2
+  saltcon      = 0.150,
+/
+&decomp
+  idecomp      = 2,
+  print_res    = "within 6",
+  dec_verbose  = 0,
+/
+# Frames: 199 frames spanning 5-995 ns (5 ns spacing) were extracted from the
+# production trajectory prior to this calculation; startframe/endframe/interval
+# above index that pre-extracted 199-frame set.
